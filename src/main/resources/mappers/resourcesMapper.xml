@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soft863.group5.bbs.dao.ResourcesMapper">
+    <resultMap id="resourceResultMap" type="resources">
+        <!--主键属性映射-->
+        <id property="id" column="resources_id" javaType="java.lang.Long"/>
+        <!--普通属性映射-->
+        <result property="name" column="resources_name"/>
+        <result property="score" column="resources_score"/>
+        <result property="date" column="resources_date" javaType="java.util.Date"/>
+        <result property="times" column="resources_times"/>
+        <result property="describe" column="resources_describe"/>
+        <result property="filepath" column="resources_filepath"/>
+        <result property="filesize" column="resources_filesize"/>
+        <result property="check" column="resources_check"/>
+        <!--关联实体类中Javabean类型属性-->
+        <association property="user" javaType="user" select="com.soft863.group5.bbs.dao.UserMapper.get"
+                     column="resources_userid" fetchType="eager">
+        </association>
+    </resultMap>
+
+    <select id="queryResourcesById" resultMap="resourceResultMap" parameterType="java.lang.Long">
+        SELECT * FROM resources WHERE resources_id = #{id}
+    </select>
+
+    <select id="queryResourcesByName" resultMap="resourceResultMap" parameterType="java.lang.String">
+        select * from resources where resources_name=#{name}
+    </select>
+
+    <select id="queryResourcesByNameLike" resultMap="resourceResultMap" parameterType="java.lang.String">
+        SELECT  * from resources where resources_name LIKE #{name}
+    </select>
+
+    <select id="queryAllResources" resultMap="resourceResultMap">
+        SELECT * FROM resources
+    </select>
+
+    <select id="queryAllResourcesByPage" parameterType="map" resultMap="resourceResultMap">
+        SELECT * FROM resources LIMIT #{position},#{size}
+    </select>
+
+    <select id="queryResourcesByUser" resultMap="resourceResultMap" parameterType="java.lang.Long">
+        SELECT * FROM resources where resources_userid = #{id}
+    </select>
+
+    <insert id="addResources" parameterType="com.soft863.group5.bbs.entity.Resources">
+        INSERT INTO resources (resources_name, resources_score,
+        resources_date, resources_times, resources_describe,
+        resources_userid, resources_filepath, resources_filesize,
+        resources_check,resources_keywords) VALUES
+        (#{name},#{score},#{date},#{times},#{describe},#{user.id},
+        #{filepath},#{filesize},#{check},#{keywords})
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <delete id="deleteResources" parameterType="java.lang.Long">
+        delete from resources where id=#{id}
+    </delete>
+    
+    <update id="updateResources" parameterType="resources">
+        UPDATE resources SET resources_name=#{name},resources_score=#{score},resources_date=#{date},
+        resources_times=#{times},resources_describe=#{describe},resources_userid=#{user.id},
+        resources_filepath=#{filepath},resources_filesize=#{filesize},resources_check=#{check},
+        resources_keywords=#{keywords} where resources_id={id}
+    </update>
+
+    <select id="queryResourcesCount" resultType="java.lang.Integer">
+        select count(resources_id) from resources
+    </select>
+</mapper>

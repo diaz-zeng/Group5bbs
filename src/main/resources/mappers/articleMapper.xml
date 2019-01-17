@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.soft863.group5.bbs.dao.ArticleMapper">
+    <resultMap id="articleMap" type="article">
+        <id property="id" column="article_id" javaType="java.lang.Long"/>
+        <result property="group" column="article_group"/>
+        <result property="title" column="article_title"/>
+        <result property="content" column="article_content"/>
+        <result property="date" column="article_date" javaType="java.util.Date"/>
+        <result property="top" column="article_top"/>
+        <result property="pass" column="article_pass"/>
+        <association property="user" column="article_userid"
+                     select="com.soft863.group5.bbs.dao.UserMapper.get" fetchType="eager"/>
+        <collection property="firstComments"
+                    select="com.soft863.group5.bbs.dao.ArticleCommentMapper.queryFirstCommentByArticle"
+                    fetchType="lazy" column="article_id"/>
+    </resultMap>
+
+
+    <select id="queryAll" resultMap="articleMap">
+        SELECT *
+        FROM article
+    </select>
+    <select id="queryAllByPage" parameterType="map" resultMap="articleMap">
+        SELECT *
+        FROM article
+        LIMIT #{position },#{size }
+    </select>
+
+    <select id="get" parameterType="java.lang.Long" resultMap="articleMap">
+        SELECT *
+        FROM article
+        WHERE article_id = #{id}
+    </select>
+
+    <update id="update" parameterType="article">
+        UPDATE article
+        SET article_group   = #{group},
+            article_title   = #{title},
+            article_content = #{content},
+            article_date    = #{date},
+            article_top     = #{top},
+            article_pass    = #{pass},
+            article_userid  = #{user.id}
+        WHERE article_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE
+        FROM article
+        WHERE article_id = #{id}
+    </delete>
+</mapper>

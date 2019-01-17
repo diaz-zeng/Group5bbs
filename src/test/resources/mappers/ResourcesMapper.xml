@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soft863.group5.bbs.dao.ResourcesMapper">
+    <resultMap id="resourceResultMap" type="resources">
+        <!--主键属性映射-->
+        <id property="id" column="resources_id"/>
+        <!--普通属性映射-->
+        <result property="name" column="resources_name"/>
+        <result property="score" column="resources_score"/>
+        <result property="date" column="resources_date"/>
+        <result property="times" column="resources_times"/>
+        <result property="describe" column="resources_describe"/>
+        <result property="filepath" column="resources_filepath"/>
+        <result property="filesize" column="resources_filesize"/>
+        <result property="check" column="resources_check"/>
+        <!--关联实体类中Javabean类型属性-->
+        <association property="user" javaType="user">
+            <id property="id" column="user_id"/>
+            <result property="name" column="user_name"/>
+        </association>
+    </resultMap>
+
+    <select id="queryResourcesById" resultMap="resourceResultMap">
+        select r.*,u.user_id,u.user_name,k.rkw_keyword
+        from resources r, user u,resourceKeyword k
+        where r.resources_userid = u.user_id
+        and  k.rkw_resourcesid=r.resources_id
+        and  r.resources_id=#{id}
+    </select>
+
+    <select id="queryAllResources" resultMap="resourceResultMap">
+        select r.*,u.user_id,u.user_name
+        from resources r, user u
+        where r.resources_userid = u.user_id
+    </select>
+</mapper>

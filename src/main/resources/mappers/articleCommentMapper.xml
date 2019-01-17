@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft863.group5.bbs.dao.ArticleCommentMapper">
+    <resultMap id="firstCommentMap" type="articleFirstComment">
+        <id property="id" column="articleFirstComment_id" javaType="java.lang.Long"/>
+        <result property="content" column="articleFirstComment_content"/>
+        <result property="date" column="articleFirstComment_date" javaType="java.util.Date"/>
+        <association property="user" select="com.soft863.group5.bbs.dao.UserMapper.get"
+                     column="articleFirstComment_user_id" fetchType="eager"/>
+        <association property="article" column="articleFirstComment_article_id"
+                     select="com.soft863.group5.bbs.dao.ArticleMapper.get" fetchType="eager"/>
+        <collection property="secondComments" select="queryCommentByComment" fetchType="lazy"
+                    column="articleFirstComment_id"/>
+    </resultMap>
+    <select id="queryFirstCommentByArticle" resultMap="firstCommentMap" parameterType="java.lang.Long">
+        SELECT *
+        FROM articleFirstComment
+        WHERE articleFirstComment_article_id = #{articleId}
+    </select>
+    <select id="getFirstComment" resultMap="firstCommentMap" parameterType="java.lang.Long">
+        SELECT *
+        FROM articleFirstComment
+        WHERE articleFirstComment_id = #{id}
+    </select>
+    <insert id="save" parameterType="article">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO articleFirstComment (articleFirstComment_user_id, articleFirstComment_article_id,
+        articleFirstComment_content, articleFirstComment_date)
+        VALUE (#{user.id}, #{article.id}, #{content}, #{date})
+    </insert>
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE
+        FROM articleFirstComment
+        WHERE articleFirstComment_id = #{id}
+    </delete>
+
+    <resultMap id="secondCommentMap" type="articleSecondComment">
+        <id property="id" column="articleSecondComment_id" javaType="java.lang.Long"/>
+        <result property="content" column="articleSecondComment_content"/>
+        <result property="date" column="articleSecondComment_date" javaType="java.util.Date"/>
+        <association property="firstComment" column="articleSecondComment_comment_id" select="getFirstComment"
+                     fetchType="eager"/>
+        <association property="user" column="articleSecondComment_user_id"
+                     select="com.soft863.group5.bbs.dao.UserMapper.get"/>
+    </resultMap>
+    <select id="queryCommentByComment" resultMap="secondCOmmentMap" parameterType="java.lang.Long">
+        SELECT *
+        FROM articleSecondComment
+        WHERE articleSecondComment_comment_id = #{commentId}
+    </select>
+    <select id="get" resultMap="secondCommentMap" parameterType="java.lang.Long">
+        SELECT *
+        FROM articleSecondComment
+        WHERE articleSecondComment_id = #{id};
+    </select>
+    <insert id="save" parameterType="articleSecondComment">
+        INSERT INTO articleSecondComment(articleSecondComment_comment_id, articleSecondComment_content,
+        articleSecondComment_user_id, articleSecondComment_date)
+        VALUES (#{firstComment.id},#{content},#{user.id},#{date})
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE
+        FROM articleSecondComment
+        WHERE articleSecondComment_id = #{id}
+    </delete>
+</mapper>

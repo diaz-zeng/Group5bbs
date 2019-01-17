@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.soft863.group5.bbs.dao.UserMapper">
+
+
+    <resultMap id="userMap" type="user">
+        <id property="id" column="user_id" javaType="java.lang.Long"></id>
+        <result property="name" column="user_name" javaType="java.lang.String"></result>
+        <result property="photo" column="user_photo"></result>
+        <result property="password" column="user_password"></result>
+        <result property="phone" column="user_phone"></result>
+        <result property="email" column="user_email"></result>
+        <result property="scores" column="user_scores"></result>
+        <collection property="resources" select="com.soft863.group5.bbs.dao.ResourcesMapper.queryResourcesByUser"
+                    column="user_id"
+                    fetchType="lazy"></collection>
+        <collection property="records" select="com.soft863.group5.bbs.dao.UserMapper.queryPointByUser" column="user_id"
+                    fetchType="lazy"></collection>
+    </resultMap>
+    <!---->
+
+    <resultMap id="pointRecordMap" type="pointRecord">
+        <id property="id" column="point_id"></id>
+        <result property="integral" column="point_integral"></result>
+        <result property="date" column="point_date" javaType="java.util.Date"></result>
+        <result property="source" column="point_source"></result>
+        <association property="user" column="point_userid" resultMap="userMap"></association>
+    </resultMap>
+
+    <select id="queryPointByUser" resultMap="pointRecordMap" parameterType="user">
+        SELECT * FROM pointRecord WHERE point_userid = #{id}
+    </select>
+
+    <select id="queryAllUser" resultMap="userMap">
+        SELECT * FROM user;
+    </select>
+
+    <select id="get" resultMap="userMap" parameterType="java.lang.Long">
+        SELECT * FROM user WHERE user_id = #{id}
+    </select>
+
+    <insert id="insertUser" parameterType="com.soft863.group5.bbs.entity.User">
+        INSERT INTO user (user_name, user_photo, user_password, user_phone, user_email, user_scores)
+    </insert>
+
+    <select id="queryByName" resultType="user">
+        SELECT * FROM user WHERE user_name=#{name}
+    </select>
+
+</mapper>

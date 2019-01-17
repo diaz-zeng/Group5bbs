@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft863.group5.bbs.dao.CommentManagerMapper">
+
+
+<select id="queryAllComment" parameterType="java.lang.Integer" resultMap="com.soft863.group5.bbs.dao.ArticleMapper.articleMap">
+    SELECT *
+    FROM acticle
+    WHERE article_pass=#{pass}
+</select>
+
+
+<update id="updateComment" parameterType="article">
+    UPDATE article
+    SET article_pass= #{pass}
+    WHERE article_id = #{id}
+</update>
+
+
+</mapper>
