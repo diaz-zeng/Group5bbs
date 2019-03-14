@@ -11,10 +11,10 @@
         <result property="top" column="article_top"/>
         <result property="pass" column="article_pass"/>
         <association property="user" column="article_userid"
-                     select="com.soft863.group5.bbs.dao.UserMapper.get" fetchType="eager"/>
+                     select="com.soft863.group5.bbs.dao.UserMapper.queryById" fetchType="eager"/>
         <collection property="firstComments"
                     select="com.soft863.group5.bbs.dao.ArticleCommentMapper.queryFirstCommentByArticle"
-                    fetchType="lazy" column="article_id"/>
+                    column="article_id"/>
     </resultMap>
 
 
@@ -22,10 +22,25 @@
         SELECT *
         FROM article
     </select>
+
+    <select id="queryByUser" resultMap="articleMap" parameterType="java.lang.Long">
+        SELECT *
+        FROM article
+        WHERE article_userid = #{id}
+    </select>
     <select id="queryAllByPage" parameterType="map" resultMap="articleMap">
         SELECT *
         FROM article
-        LIMIT #{position },#{size }
+        WHERE article_pass = #{pass}
+        ORDER BY article_top DESC,article_date DESC
+        LIMIT #{position} ,25
+    </select>
+
+
+    <select id="getCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT COUNT(article_id)
+        from article
+        WHERE article_pass = #{pass};
     </select>
 
     <select id="get" parameterType="java.lang.Long" resultMap="articleMap">
@@ -51,4 +66,19 @@
         FROM article
         WHERE article_id = #{id}
     </delete>
+
+    <select id="queryTotalNum" resultType="java.lang.Integer">
+        SELECT count(article_pass)
+        FROM article
+    </select>
+
+    <insert id="save" parameterType="article">
+        INSERT INTO article(article_userid, article_group, article_title, article_content, article_date)
+        VALUES (#{user.id}, #{group}, #{title}, #{content}, #{date})
+        <selectKey order="AFTER" keyProperty="id" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <cache eviction="LRU" flushInterval="60000" readOnly="false" type="com.soft863.group5.bbs.utils.RedisCache"/>
 </mapper>

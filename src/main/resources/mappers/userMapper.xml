@@ -2,49 +2,118 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.soft863.group5.bbs.dao.UserMapper">
 
+    <resultMap id="FavoriteMap" type="favorite">
+        <result property="date" column="favorite_date" javaType="java.util.Date"/>
+        <association property="resources" column="favorite_resourceid"  select="com.soft863.group5.bbs.dao.ResourcesMapper.queryResourcesById">
+        </association>
+        <association property="user" column="favorite_userid" select="com.soft863.group5.bbs.dao.UserMapper.queryById" fetchType="eager">
+        </association>
+    </resultMap>
 
     <resultMap id="userMap" type="user">
-        <id property="id" column="user_id" javaType="java.lang.Long"></id>
-        <result property="name" column="user_name" javaType="java.lang.String"></result>
-        <result property="photo" column="user_photo"></result>
-        <result property="password" column="user_password"></result>
-        <result property="phone" column="user_phone"></result>
-        <result property="email" column="user_email"></result>
-        <result property="scores" column="user_scores"></result>
+        <id property="id" column="user_id" javaType="java.lang.Long"/>
+        <result property="truename" column="user_truename"/>
+        <result property="name" column="user_name" javaType="java.lang.String"/>
+        <result property="birth" column="user_birth" javaType="java.util.Date"/>
+        <result property="sex" column="user_sex"/>
+        <result property="photo" column="user_photo"/>
+        <result property="password" column="user_password"/>
+        <result property="phone" column="user_phone"/>
+        <result property="email" column="user_email"/>
+        <result property="scores" column="user_scores"/>
+        <result property="attention" column="user_attention"/>
         <collection property="resources" select="com.soft863.group5.bbs.dao.ResourcesMapper.queryResourcesByUser"
                     column="user_id"
-                    fetchType="lazy"></collection>
-        <collection property="records" select="com.soft863.group5.bbs.dao.UserMapper.queryPointByUser" column="user_id"
-                    fetchType="lazy"></collection>
+                    fetchType="lazy"/>
+        <collection property="records" select="com.soft863.group5.bbs.dao.UserMapper.queryPointRecordsByUser"
+                    column="user_id"/>
     </resultMap>
-    <!---->
 
     <resultMap id="pointRecordMap" type="pointRecord">
-        <id property="id" column="point_id"></id>
-        <result property="integral" column="point_integral"></result>
-        <result property="date" column="point_date" javaType="java.util.Date"></result>
-        <result property="source" column="point_source"></result>
-        <association property="user" column="point_userid" resultMap="userMap"></association>
+        <id property="id" column="point_id"/>
+        <result property="integral" column="point_integral"/>
+        <result property="date" column="point_date" javaType="java.util.Date"/>
+        <result property="source" column="point_source"/>
+        <association property="user" column="point_userid" resultMap="userMap"/>
     </resultMap>
 
-    <select id="queryPointByUser" resultMap="pointRecordMap" parameterType="user">
+    <select id="queryPointRecordsByUser" resultMap="pointRecordMap" parameterType="java.lang.Long">
         SELECT * FROM pointRecord WHERE point_userid = #{id}
     </select>
 
     <select id="queryAllUser" resultMap="userMap">
-        SELECT * FROM user;
+        SELECT * FROM user
     </select>
 
-    <select id="get" resultMap="userMap" parameterType="java.lang.Long">
+    <select id="queryById" resultMap="userMap" parameterType="java.lang.Long">
         SELECT * FROM user WHERE user_id = #{id}
     </select>
 
-    <insert id="insertUser" parameterType="com.soft863.group5.bbs.entity.User">
-        INSERT INTO user (user_name, user_photo, user_password, user_phone, user_email, user_scores)
+    <insert id="insertUser" parameterType="user">
+      INSERT INTO user(user_truename, user_name, user_birth, user_sex, user_photo, user_password, user_phone, user_email, user_scores,user_attention)
+                 VALUES(#{truename},#{name},#{birth},#{sex},#{photo},#{password},#{phone},#{email},#{scores},#{attention})
     </insert>
 
-    <select id="queryByName" resultType="user">
+    <select id="queryByName" resultMap="userMap">
         SELECT * FROM user WHERE user_name=#{name}
     </select>
+    <select id="findByName" resultMap="userMap" parameterType="java.lang.String">
+        SELECT * FROM user WHERE user_name=#{name}
+    </select>
+
+    <insert id="addPointRecord" parameterType="pointRecord">
+        INSERT INTO pointRecord(point_integral, point_date, point_source, point_userid)
+        VALUES(#{integral},#{date},#{source},#{user.id})
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <!--update sunlei 积分更新-->
+    <update id="updateIn" parameterType="user">
+        UPDATE user
+        SET user_scores=#{scores}
+        WHERE user_id=#{id}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE user SET user_password=#{param1} WHERE user_name=#{param2}
+    </update>
+
+    <insert id="addFavorite" parameterType="favorite">
+        INSERT INTO favorites(favorite_userid, favorite_resourceid, favorite_date) VALUES (#{user.id},#{resources.id},#{date})
+    </insert>
+
+    <select id="queryFavoriteByUserId" resultMap="FavoriteMap">
+        SELECT * FROM favorites WHERE favorite_userid=#{user_id}
+    </select>
+
+    <select id="queryFavoriteById" resultMap="FavoriteMap">
+        SELECT * FROM favorites WHERE favorite_resourceid=#{param1} and  favorite_userid=#{param2}
+    </select>
+
+    <select id="queryUserSocreNum" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT COUNT(point_id)
+        FROM pointRecord
+        WHERE point_userid = #{id}
+    </select>
+
+    <select id="queryUserScoreAll" resultMap="pointRecordMap" parameterType="map">
+    SELECT * FROM pointRecord WHERE point_userid = #{user.id} order by point_date DESC LIMIT #{position},#{size}
+    </select>
+
+    <select id="queryPointByPage" resultMap="pointRecordMap" parameterType="map">
+        SELECT * FROM pointRecord WHERE point_userid = #{user.id} LIMIT ${position},15
+    </select>
+
+    <select id="queryFavoriteAll" resultMap="FavoriteMap">
+        SELECT * FROM favorites WHERE favorite_userid=#{userid} ORDER BY favorite_date DESC LIMIT #{start},5
+    </select>
+
+    <select id="queryFavoriteCount" resultType="java.lang.Integer">
+        SELECT count(favorite_date) FROM favorites WHERE favorite_userid=#{userid}
+    </select>
+
+
+    <cache eviction="LRU" readOnly="false" type="com.soft863.group5.bbs.utils.RedisCache"/>
 
 </mapper>

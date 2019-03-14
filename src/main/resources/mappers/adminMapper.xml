@@ -5,6 +5,7 @@
 <mapper namespace="com.soft863.group5.bbs.dao.AdminMapper">
 
     <select id="queryAdmins" resultType="admin">
-        SELECT * FROM admin WHERE admin_id=#{id}
+        SELECT * FROM admin WHERE admin_name=#{name}
     </select>
+    <cache eviction="LRU" readOnly="false" type="com.soft863.group5.bbs.utils.RedisCache"/>
 </mapper>

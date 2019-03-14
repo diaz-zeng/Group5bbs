@@ -22,12 +22,11 @@ public class AdminServiceImpl implements AdminService {
     private AdminMapper adminMapper;
 
     @Override
-    public Map<String, Object> adminLogin(Integer id, String password) {
+    public Map<String, Object> adminLogin(String name, String password) {
         Map<String,Object> map=new HashMap<>();
-        Admin admin = adminMapper.queryAdmins(id);
+        Admin admin = adminMapper.queryAdmins(name);
             if (admin==null||!admin.getAdmin_password().equals(password)){
                 map.put("status","error");
-                map.put("msg","账号ID或密码错误");
             }else {
                 map.put("status", "success");
                 map.put("admin", admin);

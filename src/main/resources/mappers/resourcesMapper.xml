@@ -14,12 +14,16 @@
         <result property="times" column="resources_times"/>
         <result property="describe" column="resources_describe"/>
         <result property="filepath" column="resources_filepath"/>
+        <result property="truename" column="resources_truename"/>
         <result property="filesize" column="resources_filesize"/>
         <result property="check" column="resources_check"/>
+        <result property="keywords" column="resources_keywords"/>
         <!--关联实体类中Javabean类型属性-->
-        <association property="user" javaType="user" select="com.soft863.group5.bbs.dao.UserMapper.get"
+        <association property="user" javaType="user" select="com.soft863.group5.bbs.dao.UserMapper.queryById"
                      column="resources_userid" fetchType="eager">
         </association>
+        <collection property="resourceComments" select="com.soft863.group5.bbs.dao.ResourceCommentsMapper.queryComment"
+        column="resources_id"/>
     </resultMap>
 
     <select id="queryResourcesById" resultMap="resourceResultMap" parameterType="java.lang.Long">
@@ -39,7 +43,8 @@
     </select>
 
     <select id="queryAllResourcesByPage" parameterType="map" resultMap="resourceResultMap">
-        SELECT * FROM resources LIMIT #{position},#{size}
+        SELECT * FROM resources where resources_check=1
+        order by resources_times DESC LIMIT #{position},8
     </select>
 
     <select id="queryResourcesByUser" resultMap="resourceResultMap" parameterType="java.lang.Long">
@@ -49,27 +54,33 @@
     <insert id="addResources" parameterType="com.soft863.group5.bbs.entity.Resources">
         INSERT INTO resources (resources_name, resources_score,
         resources_date, resources_times, resources_describe,
-        resources_userid, resources_filepath, resources_filesize,
+        resources_userid, resources_filepath, resources_truename,resources_filesize,
         resources_check,resources_keywords) VALUES
         (#{name},#{score},#{date},#{times},#{describe},#{user.id},
-        #{filepath},#{filesize},#{check},#{keywords})
+        #{filepath},#{truename},#{filesize},#{check},#{keywords})
         <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
-    
+
     <delete id="deleteResources" parameterType="java.lang.Long">
-        delete from resources where id=#{id}
+        delete from resources where resources_id=#{id}
     </delete>
-    
+
     <update id="updateResources" parameterType="resources">
         UPDATE resources SET resources_name=#{name},resources_score=#{score},resources_date=#{date},
         resources_times=#{times},resources_describe=#{describe},resources_userid=#{user.id},
-        resources_filepath=#{filepath},resources_filesize=#{filesize},resources_check=#{check},
-        resources_keywords=#{keywords} where resources_id={id}
+        resources_filepath=#{filepath},resources_truename=#{truename},resources_filesize=#{filesize},resources_check=#{check},
+        resources_keywords=#{keywords} where resources_id=#{id}
     </update>
 
     <select id="queryResourcesCount" resultType="java.lang.Integer">
-        select count(resources_id) from resources
+        select count(resources_id) from resources where resources_check=#{pass} ORDER BY resources_date
     </select>
+
+    <update id="plusCount" parameterType="resources">
+        UPDATE resources SET resources_times = resources_times+1
+        WHERE resources_id = #{id}
+    </update>
+    <cache eviction="LRU"  readOnly="false" type="com.soft863.group5.bbs.utils.RedisCache"/>
 </mapper>

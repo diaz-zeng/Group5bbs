@@ -1,11 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.soft863.group5.bbs.dao.ResourceAdminMapper">
-    <select id="queryResources" parameterType="java.lang.Integer"  resultMap="com.soft863.group5.bbs.dao.ResourcesMapper.resourceResultMap">
-        SELECT * FROM resources WHERE resources_check=#{check}
+    <select id="queryResources" parameterType="map"  resultMap="com.soft863.group5.bbs.dao.ResourcesMapper.resourceResultMap">
+        SELECT * FROM resources WHERE resources_check=#{check} LIMIT ${position},25
     </select>
 
+    <select id="queryResourcesCount" resultType="java.lang.Integer">
+        SELECT COUNT(resources_id) FROM resources WHERE resources_check=#{check}
+    </select>
+
+    <update id="updateResource">
+        UPDATE resources SET resources_check=#{check} WHERE resources_id=#{id}
+    </update>
+
+    <cache eviction="LRU" readOnly="false" type="com.soft863.group5.bbs.utils.RedisCache"/>
 
 </mapper>
 

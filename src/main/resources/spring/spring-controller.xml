@@ -27,4 +27,5 @@
             <value>5242880</value>
         </property>
     </bean>
+    <bean class="com.soft863.group5.bbs.exception.ExceptionResolver"/>
 </beans>

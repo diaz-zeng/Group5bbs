@@ -212,7 +212,7 @@ input[type=button]{
 .cvs .newModWin {
     position: relative;
     width:450px;
-    height:400px;
+    min-height:400px;
     margin:0 auto ;
     top:220px;
     background: white;
@@ -414,7 +414,7 @@ span.act{
 
 #comment .cons {
     position: relative;
-    height:108px;
+    min-height:108px;
     left:10px;
     right:10px;
     border-bottom: 1px dotted #eee;

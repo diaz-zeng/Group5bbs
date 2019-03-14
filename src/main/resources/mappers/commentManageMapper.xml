@@ -5,10 +5,11 @@
 <mapper namespace="com.soft863.group5.bbs.dao.CommentManagerMapper">
 
 
-<select id="queryAllComment" parameterType="java.lang.Integer" resultMap="com.soft863.group5.bbs.dao.ArticleMapper.articleMap">
+<select id="queryAllComment" parameterType="map" resultMap="com.soft863.group5.bbs.dao.ArticleMapper.articleMap">
     SELECT *
-    FROM acticle
+    FROM article
     WHERE article_pass=#{pass}
+    LIMIT #{start},#{size}
 </select>
 
 
@@ -18,5 +19,6 @@
     WHERE article_id = #{id}
 </update>
 
+    <cache eviction="LRU" readOnly="false" type="com.soft863.group5.bbs.utils.RedisCache"/>
 
 </mapper>

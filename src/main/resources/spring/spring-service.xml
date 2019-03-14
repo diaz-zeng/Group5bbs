@@ -29,7 +29,7 @@
             <tx:method name="find*" propagation="NOT_SUPPORTED"/>
             <tx:method name="get*" propagation="NOT_SUPPORTED"/>
             <tx:method name="query*" propagation="NOT_SUPPORTED"/>
-            <tx:method name="*" propagation="REQUIRED" rollback-for="java.lang.Exception" isolation="DEFAULT"/>
+            <tx:method name="*" propagation="REQUIRED" rollback-for="java.lang.Exception" isolation="READ_COMMITTED"/>
         </tx:attributes>
     </tx:advice>
 </beans>

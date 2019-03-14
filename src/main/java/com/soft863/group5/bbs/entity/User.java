@@ -2,21 +2,44 @@ package com.soft863.group5.bbs.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class User implements Serializable{
     private Long id;
+    private String truename;
     private String name;
+    private Date   birth;
+    private String sex;
     private String photo;
     private String password;
     private String phone;
     private String email;
     private Integer scores;
+    private Integer attention;
+
     private List<Resources> resources = new ArrayList<>();
     private List<PointRecord> records = new ArrayList<>();
+    private List<Favorite> favorites = new ArrayList<>();
 
 
     public User() {
+    }
+
+    public User(Long id, String truename, String name, Date birth, String sex, String photo, String password, String phone, String email, Integer scores, Integer attention, List<Resources> resources, List<PointRecord> records) {
+        this.id = id;
+        this.truename = truename;
+        this.name = name;
+        this.birth = birth;
+        this.sex = sex;
+        this.photo = photo;
+        this.password = password;
+        this.phone = phone;
+        this.email = email;
+        this.scores = scores;
+        this.attention = attention;
+        this.resources = resources;
+        this.records = records;
     }
 
     public User(String name, String photo, String password, String phone, String email, Integer scores, List<Resources> resources, List<PointRecord> records) {
@@ -37,6 +60,38 @@ public class User implements Serializable{
         this.phone = phone;
         this.email = email;
         this.scores = scores;
+    }
+
+    public String getTruename() {
+        return truename;
+    }
+
+    public void setTruename(String truename) {
+        this.truename = truename;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public Integer getAttention() {
+        return attention;
+    }
+
+    public void setAttention(Integer attention) {
+        this.attention = attention;
     }
 
     public Long getId() {
@@ -115,13 +170,16 @@ public class User implements Serializable{
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", truename='" + truename + '\'' +
                 ", name='" + name + '\'' +
+                ", birth=" + birth +
+                ", sex='" + sex + '\'' +
                 ", photo='" + photo + '\'' +
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", scores=" + scores +
-                ", resources=" + resources +
+                ", attention=" + attention +
                 '}';
     }
 }

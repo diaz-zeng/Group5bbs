@@ -12,5 +12,5 @@ public interface AdminService {
     /**
      * 管理员登录
      */
-    public Map<String, Object> adminLogin(Integer id, String password);
+    public Map<String, Object> adminLogin(String name, String password);
 }

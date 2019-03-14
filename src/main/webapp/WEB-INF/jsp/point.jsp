@@ -5,45 +5,48 @@
   Time: 17:33
   To change this template use File | Settings | File Templates.
 --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/index.css"/>
     <title>资源上传</title>
-    <script src="js/jquery-3.2.1.min.js"></script>
-
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+    <%--<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.css">--%>
+    <link rel="stylesheet" type="text/css" href="/css/index.css"/>
+    <script src="/js/cache.js"></script>
     <script>
-        $(function(){
+        $(function () {
 
         });
     </script>
 </head>
-<body>
+<body style="background-color: azure">
 <div class="header">
     <div class="lf">
-        <a href="index.html">首页</a>
-        <a href="bbs.html">论坛</a>
-        <a href="upload.html">上传资料</a>
+        <a href="/resources/listResourcesByPage.action">首页</a>
+        <a href="/BBS/index.action">论坛</a>
+        <a href="/resources/toUpload.action">上传资料</a>
     </div>
 
     <div class="rf">
-        <a href="personal.html">个人信息</a>
-        <a href="shoucang.html">我的收藏</a>
-        <a href="point.html">积分</a>
-        <a>退出登录</a>
+        <a href="/User/personal.action">个人信息</a>
+        <a href="/User/favorite.action?userid=${u.id}">我的收藏</a>
+        <a href="/User/point.action?id=${u.id}">积分</a>
+        <a href="/User/logout.action">退出登录</a>
     </div>
 </div>
 
 <div class="page_nav">
-    <p>当前积分：<span>15</span></p>
+    <p>当前积分：<span>${u.scores}</span></p>
 </div>
 
-<!-- 上传表单-->
-<div class="page_tb">
-    <table>
+<div class="container">
+    <table class="table table-striped table-bordered table-hover">
         <thead>
         <tr>
             <th>序号</th>
@@ -52,51 +55,31 @@
             <th>来源</th>
         </tr>
         </thead>
-        <tbody>
-        <tr>
-            <td>1</td>
-            <td>20</td>
-            <td>2017-05-08 12:23:23</td>
-            <td>用户注册</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>8</td>
-            <td>2017-01-08 15:21:32</td>
-            <td>上传资源</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>1</td>
-            <td>2017-01-08 15:21:32</td>
-            <td>评论资源</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>-4</td>
-            <td>2017-01-08 15:21:32</td>
-            <td>下载资源</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>2</td>
-            <td>2017-01-08 15:21:32</td>
-            <td>发表帖子</td>
-        </tr>
-
-        </tbody>
+        <c:forEach var="record" items="${records}">
+            <tbody>
+            <tr style="text-align: center">
+                <td>${record.id}</td>
+                <td>${record.integral}</td>
+                <td><fmt:formatDate value="${record.date}" pattern="yyyy-MM-dd hh:mm:ss"></fmt:formatDate></td>
+                <td>${record.source}</td>
+            </tr>
+            </tbody>
+        </c:forEach>
     </table>
-
-    <div class="panigation">
-        <a>上一页</a>
-        <a>1</a>
-        <a>2</a>
-        <a class="act">3</a>
-        <a>4</a>
-        <a>5</a>
-        <a>下一页></a>
-    </div>
+    <nav aria-label="...">
+        <ul class="pager">
+            <li><a href="javascript:void(0);" onclick="turnPage(${currentPage-1})">上一页</a></li>
+            <li><label>当前第${currentPage}页</label></li>
+            <li><a href="javascript:void(0);" onclick="turnPage(${currentPage+1})">下一页</a></li>
+        </ul>
+    </nav>
 </div>
 </body>
-
+<script>
+    function turnPage(currentPage) {
+        if (articlePage > 0 && articlePage <=${totalPage}) {
+            window.location.href = "/User/point" + currentPage + ".action";
+        }
+    }
+</script>
 </html>

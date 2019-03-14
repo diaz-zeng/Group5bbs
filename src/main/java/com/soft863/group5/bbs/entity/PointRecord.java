@@ -1,11 +1,15 @@
 package com.soft863.group5.bbs.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class PointRecord {
+public class PointRecord implements Serializable {
 
     private Integer    id;
     private Integer    integral;
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date       date;
     private String     source;
     private User    user;

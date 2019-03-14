@@ -1,6 +1,5 @@
 package com.soft863.group5.bbs.entity;
 
-import com.sun.org.apache.xpath.internal.compiler.Keywords;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -22,26 +21,40 @@ public class Resources implements Serializable {
     private Integer times;
     private String describe;
     private String filepath;
+    private String truename;
     private Double filesize;
     private Integer check;
     private User user;
     private String keywords;
+    private List<ResourceComments> resourceComments;
 
     public Resources() {
     }
 
-    public Resources(String name, Integer score, Date date, Integer times, String describe, String filepath, Double filesize, Integer check, User user, String keywords) {
+    public Resources(String name, Integer score, Date date, Integer times, String describe, String filepath, String truename, Double filesize, Integer check, User user, String keywords, List<ResourceComments> resourceComments) {
         this.name = name;
         this.score = score;
         this.date = date;
         this.times = times;
         this.describe = describe;
         this.filepath = filepath;
+        this.truename = truename;
         this.filesize = filesize;
         this.check = check;
         this.user = user;
         this.keywords = keywords;
+        this.resourceComments = resourceComments;
     }
+
+    public String getTruename() { return truename; }
+
+    public void setTruename(String truename) { this.truename = truename; }
+
+    public List<ResourceComments> getResourceComments() {
+        return resourceComments;
+    }
+
+    public void setResourceComments(List<ResourceComments> resourceComments) { this.resourceComments = resourceComments; }
 
     public Long getId() {
         return id;
@@ -130,4 +143,25 @@ public class Resources implements Serializable {
     public void setKeywords(String keywords) {
         this.keywords = keywords;
     }
+
+
+    @Override
+    public String toString() {
+        return "Resources{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", score=" + score +
+                ", date=" + date +
+                ", times=" + times +
+                ", describe='" + describe + '\'' +
+                ", filepath='" + filepath + '\'' +
+                ", truename='" + truename + '\'' +
+                ", filesize=" + filesize +
+                ", check=" + check +
+                ", user=" + user +
+                ", keywords='" + keywords + '\'' +
+                ", resourceComments=" + resourceComments +
+                '}';
+    }
 }
+

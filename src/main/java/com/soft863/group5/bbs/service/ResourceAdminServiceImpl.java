@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资源管理
@@ -22,14 +23,17 @@ public class ResourceAdminServiceImpl implements ResourceAdminService {
 
 
     @Override
-    public List<Resources> resourcesAll(Integer check) {
-
-        return resourceAdminMapper.queryResources(1);
+    public List<Resources> resourcesAll(Integer position,Integer chcek) {
+        return resourceAdminMapper.queryResources(position,chcek);
     }
 
     @Override
-    public void updateResourceCheck(Integer check) {
-        resourceAdminMapper.updateResource();
+    public Integer updateResourceCheck(Long id,Integer check)  {
+      return resourceAdminMapper.updateResource(id,check);
+    }
+    @Override
+    public Integer resourcesCount(Integer check) {
+       return resourceAdminMapper.queryResourcesCount(check);
     }
 
 }

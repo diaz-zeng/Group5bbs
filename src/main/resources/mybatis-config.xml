@@ -7,6 +7,10 @@
     <settings>
         <setting name="jdbcTypeForNull" value="NULL"></setting>
         <setting name="logImpl" value="LOG4J"/>
+        <setting name="cacheEnabled" value="true"/>
+        <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="true"/>
         <!-- 使用jdbc的getGeneratedKeys获取数据库自增主键值 -->
         <!--<setting name="useGeneratedKeys" value="true"/>-->
 

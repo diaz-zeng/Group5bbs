@@ -14,5 +14,5 @@ public interface AdminMapper {
     /**
      * 根据id查询管理员
      */
-    public Admin queryAdmins(Integer id);
+    public Admin queryAdmins(String name);
 }

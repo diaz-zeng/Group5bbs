@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -37,7 +38,7 @@ public class Article implements Serializable {
         this.firstComments = firstComments;
     }
 
-    public Long getId() {s
+    public Long getId() {
         return id;
     }
 
@@ -107,5 +108,26 @@ public class Article implements Serializable {
 
     public void setFirstComments(Set<ArticleFirstComment> firstComments) {
         this.firstComments = firstComments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Article article = (Article) o;
+        return Objects.equals(id, article.id) &&
+                Objects.equals(group, article.group) &&
+                Objects.equals(title, article.title) &&
+                Objects.equals(content, article.content) &&
+                Objects.equals(date, article.date) &&
+                Objects.equals(top, article.top) &&
+                Objects.equals(pass, article.pass) &&
+                Objects.equals(user, article.user) &&
+                Objects.equals(firstComments, article.firstComments);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, group, title, content, date, top, pass, user, firstComments);
     }
 }
